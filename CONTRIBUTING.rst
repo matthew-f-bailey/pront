@@ -83,6 +83,8 @@ Ready to contribute? Here's how to set up `pront` for local development.
     $ python setup.py test or pytest
     $ tox
 
+    Be sure to use Tox across 3.6 to 3.8 as there are version differences
+
    To get flake8 and tox, just pip install them into your virtualenv.
 
 6. Commit your changes and push your branch to GitHub::
