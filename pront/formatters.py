@@ -2,24 +2,35 @@
 from abc import ABC, abstractmethod
 from json import dumps
 
+class Formatter(ABC):
+    """Interface for any and all formatters
 
-class Formatter():
+    :param ABC: Abstract Base Class
+    :type ABC: abc.ABC
+    """
 
-    def format(self, unformatted, indent: int = 3):
-        """Basic formatting done here, collection specific
-            go in implementations
+    @abstractmethod
+    def format(self, unformatted):
+        pass
 
-        :param unformatted: variable to print
-        :type unformatted: any
-        :param indent: number of spaces to indent, defaults to 3
-        :type indent: int, optional
-        :return: formatted var
-        :rtype: str
-        """
-        var_type = self.get_var_type(unformatted)
-        j = dumps(unformatted, indent=indent)
-        formatted = f"{var_type}\n{j}"
+    def get_var_name(self, var):
+        # Following only works in 3.8+, eat error if thrown
+        try:
+            var_name = f"{var=}".split("=")[0]
+            return var_name
+        except Exception as e:
+            return type(var)
+
+class DictFormatter(Formatter):
+
+    def format(self, unformatted, indent=3):
+        formatted = dumps(unformatted, indent=indent)
         return formatted
 
-    def get_var_type(self, var):
-        return f"Type: <{type(var).__name__}>"
+
+class ListFormatter(Formatter):
+
+    def format(self, unformatted):
+        string_list = [f"|{i}|{el}|" for i, el in enumerate(unformatted)]
+        var_name = self.get_var_name(unformatted)
+        f"\n".join([var_name] + string_list)
